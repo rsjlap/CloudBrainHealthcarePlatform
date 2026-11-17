@@ -1,0 +1,15 @@
+[Unit]
+Description=Cloud Brain Medical Backend
+After=network.target mysql.service
+
+[Service]
+Type=simple
+User=www-data
+WorkingDirectory=/opt/cloud-brain-medical
+EnvironmentFile=/opt/cloud-brain-medical/backend.env
+ExecStart=/usr/bin/java -jar /opt/cloud-brain-medical/app.jar
+Restart=on-failure
+RestartSec=5
+
+[Install]
+WantedBy=multi-user.target

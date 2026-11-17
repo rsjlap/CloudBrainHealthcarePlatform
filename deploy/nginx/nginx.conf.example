@@ -1,0 +1,32 @@
+# Nginx 主配置示例（Windows 本地验证用）
+#
+# 用法：
+#   1. 从 https://nginx.org/en/download.html 下载 Windows 版 Nginx 并解压，例如 C:\nginx
+#   2. 运行 deploy\scripts\setup-nginx-windows.ps1 生成站点配置
+#   3. 在本文件所在目录执行：
+#        copy /Y nginx.conf.example C:\nginx\conf\nginx.conf
+#   4. 在 C:\nginx 目录下执行：
+#        nginx -t
+#        start nginx
+#
+# 注意：Windows 路径请使用正斜杠，例如 D:/college/job/deploy/nginx/html
+
+worker_processes  1;
+
+error_log  logs/error.log;
+pid        logs/nginx.pid;
+
+events {
+    worker_connections  1024;
+}
+
+http {
+    include       mime.types;
+    default_type  application/octet-stream;
+
+    sendfile        on;
+    keepalive_timeout  65;
+
+    # 由 setup-nginx-windows.ps1 生成
+    include cloud-brain-medical.generated.conf;
+}

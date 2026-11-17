@@ -1,0 +1,47 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.cloudbrain.mapper.DoctorMapper">
+
+    <select id="findAvailableByDepartmentAndDate" resultType="com.neusoft.cloudbrain.entity.Doctor">
+        SELECT DISTINCT d.*
+        FROM doctor d
+        INNER JOIN schedule s ON s.doctor_id = d.id
+        WHERE d.department_id = #{deptId}
+          AND s.work_date = #{workDate}
+          AND s.registered_count &lt; s.max_patients
+    </select>
+
+    <select id="adminSearchPage" resultType="com.neusoft.cloudbrain.dto.response.admin.AdminDoctorListVO">
+        SELECT d.id,
+               u.username,
+               u.real_name AS realName,
+               u.phone,
+               u.status,
+               u.created_at AS createdAt,
+               d.department_id AS departmentId,
+               dept.name AS departmentName,
+               d.title,
+               d.specialty,
+               d.introduction,
+               d.registration_fee AS registrationFee,
+               d.is_available AS isAvailable
+        FROM doctor d
+        INNER JOIN `user` u ON d.id = u.id
+        LEFT JOIN department dept ON d.department_id = dept.id
+        WHERE u.role = 'DOCTOR'
+        <if test="keyword != null and keyword != ''">
+            AND (LOWER(u.real_name) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR LOWER(u.username) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR u.phone LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="departmentId != null">
+            AND d.department_id = #{departmentId}
+        </if>
+        <if test="status != null">
+            AND u.status = #{status}
+        </if>
+        ORDER BY u.created_at DESC
+    </select>
+
+</mapper>

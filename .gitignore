@@ -1,0 +1,22 @@
+deploy/artifacts/
+deploy/nginx/html/*
+!deploy/nginx/html/.gitkeep
+deploy/nginx/cloud-brain-medical.generated.conf
+
+# 构建产物（勿提交/勿打包，可 npm install / mvn package 重新生成）
+cloud-brain-medical-frontend/node_modules/
+cloud-brain-medical-frontend/dist/
+cloud-brain-medical-frontend/coverage/
+cloud-brain-medical-backend/target/
+*.class
+*.zip
+
+# IDE
+.idea/
+*.iml
+.vscode/
+
+# 日志与临时文件
+*.log
+.DS_Store
+Thumbs.db

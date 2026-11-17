@@ -1,0 +1,50 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.cloudbrain.mapper.ScheduleMapper">
+
+    <select id="findAvailableSlots" resultType="com.neusoft.cloudbrain.entity.Schedule">
+        SELECT *
+        FROM schedule
+        WHERE doctor_id = #{doctorId}
+          AND work_date = #{workDate}
+          AND registered_count &lt; max_patients
+    </select>
+
+    <select id="search" resultType="com.neusoft.cloudbrain.entity.Schedule">
+        SELECT s.*
+        FROM schedule s
+        INNER JOIN doctor d ON s.doctor_id = d.id
+        LEFT JOIN department dept ON d.department_id = dept.id
+        WHERE 1 = 1
+        <if test="deptId != null">
+            AND dept.id = #{deptId}
+        </if>
+        <if test="workDate != null">
+            AND s.work_date = #{workDate}
+        </if>
+        <if test="timeSlot != null">
+            AND s.time_slot = #{timeSlot}
+        </if>
+        ORDER BY s.work_date DESC, dept.sort_order, d.id, s.time_slot
+    </select>
+
+    <select id="searchPage" resultType="com.neusoft.cloudbrain.entity.Schedule">
+        SELECT s.*
+        FROM schedule s
+        INNER JOIN doctor d ON s.doctor_id = d.id
+        LEFT JOIN department dept ON d.department_id = dept.id
+        WHERE 1 = 1
+        <if test="deptId != null">
+            AND dept.id = #{deptId}
+        </if>
+        <if test="workDate != null">
+            AND s.work_date = #{workDate}
+        </if>
+        <if test="timeSlot != null">
+            AND s.time_slot = #{timeSlot}
+        </if>
+        ORDER BY s.work_date DESC, dept.sort_order, d.id, s.time_slot
+    </select>
+
+</mapper>

@@ -1,0 +1,55 @@
+spring:
+  datasource:
+    url: ${DB_URL}
+    username: ${DB_USER}
+    password: ${DB_PASSWORD}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.neusoft.cloudbrain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+
+logging:
+  level:
+    root: WARN
+    com.neusoft.cloudbrain: INFO
+
+# 生产环境 API 文档默认关闭，按需开启
+springdoc:
+  api-docs:
+    enabled: ${SWAGGER_ENABLED:false}
+  swagger-ui:
+    enabled: ${SWAGGER_ENABLED:false}
+
+knife4j:
+  enable: ${SWAGGER_ENABLED:false}
+
+server:
+  port: ${SERVER_PORT:8081}
+  # 仅监听本机，由 Nginx 反代；若需局域网直连 Jar 可改为 0.0.0.0
+  address: ${SERVER_ADDRESS:127.0.0.1}
+
+app:
+  cors:
+    # Nginx 同源反代 /api 时浏览器无跨域，可关闭 CORS
+    enabled: ${CORS_ENABLED:false}
+    # 若未使用 Nginx 反代、前后端不同域，可设 CORS_ENABLED=true 并在此列出前端域名：
+    # allowed-origins:
+    #   - https://your-frontend-domain.com
+  ai:
+    enabled: ${AI_ENABLED:true}
+  kg:
+    enabled: ${KG_ENABLED:false}
+    base-url: ${KG_BASE_URL:http://127.0.0.1:5000}
+    api-mode: ${KG_API_MODE:legacy}
+  speech:
+    enabled: ${SPEECH_ENABLED:false}
+    iflytek:
+      app-id: ${IFLYTEK_APP_ID:}
+      api-key: ${IFLYTEK_API_KEY:}
+      api-secret: ${IFLYTEK_API_SECRET:}

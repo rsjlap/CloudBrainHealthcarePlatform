@@ -1,0 +1,54 @@
+spring:
+  datasource:
+    # 本机就是 MySQL 主机：保持 localhost 即可，无需改 IP
+    # 组员在自己电脑上要把 DB_URL 改成 jdbc:mysql://你的IPv4:3306/cloud_brain_medical?...
+    url: ${DB_URL:jdbc:mysql://localhost:3306/cloud-brain-medical?useUnicode=true&characterEncoding=utf8&serverTimezone=Asia/Shanghai&useSSL=false&allowPublicKeyRetrieval=true}
+    username: ${DB_USER:root}
+    password: ${DB_PASSWORD:123456}
+    driver-class-name: com.mysql.cj.jdbc.Driver
+  sql:
+    init:
+      mode: never
+  ai:
+    openai:
+      api-key: ${AI_API_KEY:sk-cafac6f855f9456cba549cb6e6451f52}
+      base-url: https://api.deepseek.com
+      chat:
+        options:
+          model: deepseek-chat
+
+mybatis-plus:
+  mapper-locations: classpath:mapper/**/*.xml
+  type-aliases-package: com.neusoft.cloudbrain.entity
+  configuration:
+    map-underscore-to-camel-case: true
+    log-impl: org.apache.ibatis.logging.stdout.StdOutImpl
+  global-config:
+    db-config:
+      id-type: auto
+
+logging:
+  level:
+    com.neusoft.cloudbrain: DEBUG
+    com.neusoft.cloudbrain.mapper: DEBUG
+
+app:
+  cors:
+    enabled: true
+    allowed-origins:
+      - http://localhost:5173
+      - http://127.0.0.1:5173
+  ai:
+    enabled: true
+  kg:
+    enabled: ${KG_ENABLED:true}
+    # ⚠️ 图谱在另一台电脑：必须改成那台机器的局域网 IP，127.0.0.1 只能连本机
+    # 示例：base-url: http://192.168.1.100:5000
+    base-url: ${KG_BASE_URL:http://10.116.214.1:5000}
+    api-mode: ${KG_API_MODE:legacy}
+  speech:
+    enabled: ${SPEECH_ENABLED:true}
+    iflytek:
+      app-id: ${IFLYTEK_APP_ID:bf639c95}
+      api-key: ${IFLYTEK_API_KEY:a61f39e041c4f2f1b8bc4bf0ed50c325}
+      api-secret: ${IFLYTEK_API_SECRET:ZWY4ZjNiMmMzNjlmYjVlOGYxODI4NjA1}

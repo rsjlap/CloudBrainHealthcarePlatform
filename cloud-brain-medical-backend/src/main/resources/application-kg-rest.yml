@@ -1,0 +1,11 @@
+# 知识图谱 REST 风格接口配置（与 legacy POST 风格二选一）
+# 使用方式：spring.profiles.active=dev,kg-rest  或设置 KG_API_MODE=rest
+app:
+  kg:
+    api-mode: rest
+    paths:
+      health: /health
+      chat: /api/graph/chat
+      exam: /api/graph/disease/{disease}/exams
+      drug: /api/graph/disease/{disease}/drugs
+      forbidden: /api/graph/disease/{disease}/forbidden

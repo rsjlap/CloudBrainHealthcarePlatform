@@ -1,0 +1,82 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<!DOCTYPE mapper PUBLIC "-//mybatis.org//DTD Mapper 3.0//EN"
+        "http://mybatis.org/dtd/mybatis-3-mapper.dtd">
+<mapper namespace="com.neusoft.cloudbrain.mapper.PatientMapper">
+
+    <select id="countWithAllergy" resultType="long">
+        SELECT COUNT(*)
+        FROM patient
+        WHERE allergy_history IS NOT NULL AND TRIM(allergy_history) &lt;&gt; ''
+    </select>
+
+    <select id="countWithRegistration" resultType="long">
+        SELECT COUNT(DISTINCT p.id)
+        FROM patient p
+        INNER JOIN registration r ON r.patient_id = p.id
+    </select>
+
+    <select id="search" resultType="com.neusoft.cloudbrain.entity.Patient">
+        SELECT p.*
+        FROM patient p
+        INNER JOIN `user` u ON p.id = u.id
+        WHERE u.role = 'PATIENT'
+        <if test="keyword != null and keyword != ''">
+            AND (LOWER(u.real_name) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR LOWER(u.username) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR u.phone LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="gender != null">
+            AND p.gender = #{gender}
+        </if>
+        <if test="hasAllergy != null">
+            <choose>
+                <when test="hasAllergy == true">
+                    AND p.allergy_history IS NOT NULL AND TRIM(p.allergy_history) &lt;&gt; ''
+                </when>
+                <otherwise>
+                    AND (p.allergy_history IS NULL OR TRIM(p.allergy_history) = '')
+                </otherwise>
+            </choose>
+        </if>
+        <if test="startTime != null">
+            AND u.created_at &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND u.created_at &lt;= #{endTime}
+        </if>
+        ORDER BY u.created_at DESC
+    </select>
+
+    <select id="searchPage" resultType="com.neusoft.cloudbrain.entity.Patient">
+        SELECT p.*
+        FROM patient p
+        INNER JOIN `user` u ON p.id = u.id
+        WHERE u.role = 'PATIENT'
+        <if test="keyword != null and keyword != ''">
+            AND (LOWER(u.real_name) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR LOWER(u.username) LIKE LOWER(CONCAT('%', #{keyword}, '%'))
+                 OR u.phone LIKE CONCAT('%', #{keyword}, '%'))
+        </if>
+        <if test="gender != null">
+            AND p.gender = #{gender}
+        </if>
+        <if test="hasAllergy != null">
+            <choose>
+                <when test="hasAllergy == true">
+                    AND p.allergy_history IS NOT NULL AND TRIM(p.allergy_history) &lt;&gt; ''
+                </when>
+                <otherwise>
+                    AND (p.allergy_history IS NULL OR TRIM(p.allergy_history) = '')
+                </otherwise>
+            </choose>
+        </if>
+        <if test="startTime != null">
+            AND u.created_at &gt;= #{startTime}
+        </if>
+        <if test="endTime != null">
+            AND u.created_at &lt;= #{endTime}
+        </if>
+        ORDER BY u.created_at DESC
+    </select>
+
+</mapper>
